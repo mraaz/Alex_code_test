@@ -1,22 +1,87 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { NoDataView } from "./NoDataView";
+import { IndividualTransaction } from "./IndividualTransaction";
+
+import "./App.css";
 
 function App() {
+  const [transactions = {}, setData] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data_set = await axios.get(
+          "https://alex-code-test.azurewebsites.net/api/transactions"
+        );
+        if (data_set.data) setData(data_set.data);
+        console.log(data_set.data);
+      } catch (error) {
+        console.log("Opps! ", error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const clickedEdit = async (txn) => {
+    try {
+      const results = await axios.put(
+        `https://alex-code-test.azurewebsites.net/api/transactions/${txn.id}`,
+        {
+          id: txn.id,
+          fromAccount: txn.fromAccount,
+          toAccount: txn.toAccount,
+          description: txn.description,
+          amount: txn.amount,
+          date: txn.date,
+          owner: { id: txn.owner.id, name: txn.owner.name },
+        }
+      );
+      console.log(results);
+      if ((results.data = "Transaction updated")) console.log("Success");
+      else console.log("Failed");
+    } catch (error) {
+      console.log("Opps! ", error);
+    }
+  };
+
+  const clickedDelete = async (id) => {
+    try {
+      const results = await axios.delete(
+        `https://alex-code-test.azurewebsites.net/api/transactions/${id}`
+      );
+      if ((results.data = "Transaction deleted")) console.log("Success");
+      else console.log("Failed");
+    } catch (error) {
+      console.log("Opps! ", error);
+    }
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <NoDataView haveData={transactions.length}>
+          {transactions.map((txn) => (
+            <div className="transaction">
+              <IndividualTransaction transaction={txn} key={txn.id} />
+              <button
+                type="button-edit"
+                onClick={() => clickedEdit(txn)}
+                className="btn btn-edit"
+              >
+                Edit
+              </button>
+              &nbsp;
+              <button
+                type="button-delete"
+                onClick={() => clickedDelete(txn.id)}
+                className="btn btn-delete"
+              >
+                Delete
+              </button>
+            </div>
+          ))}
+        </NoDataView>
       </header>
     </div>
   );
