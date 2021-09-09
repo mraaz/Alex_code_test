@@ -37,7 +37,6 @@ function App() {
           owner: { id: txn.owner.id, name: txn.owner.name },
         }
       );
-      console.log(results);
       if ((results.data = "Transaction updated")) console.log("Success");
       else console.log("Failed");
     } catch (error) {
@@ -74,7 +73,11 @@ function App() {
               &nbsp;
               <button
                 type="button-delete"
-                onClick={() => clickedDelete(txn.id)}
+                onClick={() => {
+                  if (window.confirm("Delete this transaction?")) {
+                    clickedDelete(txn.id);
+                  }
+                }}
                 className="btn btn-delete"
               >
                 Delete
