@@ -46,7 +46,7 @@ export const CustomModal = (props) => {
 
   async function saveTrans() {
     try {
-      const data_set = await axios.post(
+      await axios.post(
         "https://alex-code-test.azurewebsites.net/api/transactions",
         {
           id: "6976fe63-c665-445b-835c-42dabe9fa3b7",
@@ -86,7 +86,6 @@ export const CustomModal = (props) => {
             value={amount}
             onChange={(e) => setAmount(e.target.value.replace(/\D/, ""))}
             placeholder="Enter Amount"
-            pattern="[0-9]*"
           />
 
           <div className="label">Date</div>
