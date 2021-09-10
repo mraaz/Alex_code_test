@@ -19,7 +19,6 @@ function App() {
           "https://alex-code-test.azurewebsites.net/api/transactions"
         );
         if (data_set.data) setData(data_set.data);
-        console.log(data_set.data);
       } catch (error) {
         console.log("Opps! ", error);
       }
@@ -63,11 +62,8 @@ function App() {
   };
 
   const clickedAdd = () => {
-    console.log("TEST");
     setcurTrans(null);
-    setOpenModal(true, () => {
-      console.log("HEsdfasdfRE");
-    });
+    setOpenModal(true);
   };
 
   return (
@@ -100,6 +96,7 @@ function App() {
               >
                 Delete
               </button>
+              <hr style={{ width: "100%" }}></hr>
             </div>
           ))}
         </NoDataView>
