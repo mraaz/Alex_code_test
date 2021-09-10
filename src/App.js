@@ -3,10 +3,14 @@ import axios from "axios";
 import { NoDataView } from "./NoDataView";
 import { IndividualTransaction } from "./IndividualTransaction";
 
+import { CustomModal } from "./CustomModal";
+
 import "./App.css";
 
 function App() {
   const [transactions = {}, setData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [curTrans, setcurTrans] = useState();
 
   useEffect(() => {
     async function fetchData() {
@@ -24,6 +28,8 @@ function App() {
   }, []);
 
   const clickedEdit = async (txn) => {
+    setcurTrans(txn);
+    setOpenModal(true);
     try {
       const results = await axios.put(
         `https://alex-code-test.azurewebsites.net/api/transactions/${txn.id}`,
@@ -56,9 +62,21 @@ function App() {
     }
   };
 
+  const clickedAdd = () => {
+    console.log("TEST");
+    setcurTrans(null);
+    setOpenModal(true, () => {
+      console.log("HEsdfasdfRE");
+    });
+  };
+
   return (
     <div className="App">
       <header className="App-header">
+        <button onClick={() => clickedAdd()}>Add Transaction</button>
+        {openModal && (
+          <CustomModal payload={curTrans} setOpenModal={setOpenModal} />
+        )}
         <NoDataView haveData={transactions.length}>
           {transactions.map((txn) => (
             <div className="transaction">
