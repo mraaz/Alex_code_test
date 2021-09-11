@@ -86,7 +86,7 @@ export const CustomModal = (props) => {
       props.setOpenModal(false);
     } catch (error) {
       console.log("Opps! ", error);
-      alert("Record unsucessfull, ensure all fields are filled in");
+      alert("Record unsucessful, ensure all fields are filled in");
     }
   }
 
