@@ -18,6 +18,7 @@ const customStyles = {
 
 export const CustomModal = (props) => {
   const [modalIsOpen, setIsOpen] = useState(true);
+  const [newTrans, setnewTrans] = useState(true);
 
   const [amount = 0, setAmount] = useState();
   const [date = "", setDate] = useState();
@@ -28,7 +29,6 @@ export const CustomModal = (props) => {
   const [toAcc = "", setToAcc] = useState();
 
   useEffect(() => {
-    console.log(props);
     if (props.payload != null) {
       setAmount(props.payload.amount);
       setDate(props.payload.date);
@@ -37,6 +37,7 @@ export const CustomModal = (props) => {
       setOwnerID(props.payload.owner.id);
       setOwnerName(props.payload.owner.name);
       setToAcc(props.payload.toAccount);
+      setnewTrans(false);
     }
   }, []);
 
@@ -46,21 +47,41 @@ export const CustomModal = (props) => {
 
   async function saveTrans() {
     try {
-      await axios.post(
-        "https://alex-code-test.azurewebsites.net/api/transactions",
-        {
-          id: "6976fe63-c665-445b-835c-42dabe9fa3b7",
-          fromAccount: fromAcc,
-          toAccount: toAcc,
-          description: description,
-          amount: amount,
-          date: date,
-          owner: {
-            id: ownerID,
-            name: ownerName,
-          },
-        }
-      );
+      if (newTrans) {
+        await axios.post(
+          "https://alex-code-test.azurewebsites.net/api/transactions",
+          {
+            id: "6976fe63-c665-445b-835c-42dabe9fa3b7",
+            fromAccount: fromAcc,
+            toAccount: toAcc,
+            description: description,
+            amount: amount,
+            date: date,
+            owner: {
+              id: ownerID,
+              name: ownerName,
+            },
+          }
+        );
+      } else {
+        const data = await axios.put(
+          `https://alex-code-test.azurewebsites.net/api/transactions/${props.payload.id}`,
+          {
+            id: props.payload.id,
+            fromAccount: fromAcc,
+            toAccount: toAcc,
+            description: description,
+            amount: amount,
+            date: date,
+            owner: {
+              id: ownerID,
+              name: ownerName,
+            },
+          }
+        );
+        console.log(data);
+      }
+
       alert("Record saved!");
       props.setOpenModal(false);
     } catch (error) {
@@ -137,7 +158,7 @@ export const CustomModal = (props) => {
             placeholder="Enter Owner Name"
           />
         </form>
-        <button onClick={saveTrans}>Save</button>
+        <button onClick={saveTrans}> {newTrans ? "Create" : "Update"} </button>
         &nbsp;
         <button onClick={closeModal}>Cancel</button>
       </Modal>

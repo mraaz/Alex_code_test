@@ -29,24 +29,6 @@ function App() {
   const clickedEdit = async (txn) => {
     setcurTrans(txn);
     setOpenModal(true);
-    try {
-      const results = await axios.put(
-        `https://alex-code-test.azurewebsites.net/api/transactions/${txn.id}`,
-        {
-          id: txn.id,
-          fromAccount: txn.fromAccount,
-          toAccount: txn.toAccount,
-          description: txn.description,
-          amount: txn.amount,
-          date: txn.date,
-          owner: { id: txn.owner.id, name: txn.owner.name },
-        }
-      );
-      if ((results.data = "Transaction updated")) console.log("Success");
-      else console.log("Failed");
-    } catch (error) {
-      console.log("Opps! ", error);
-    }
   };
 
   const clickedDelete = async (id) => {
